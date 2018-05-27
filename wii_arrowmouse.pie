@@ -1,0 +1,32 @@
+﻿wiimote.leds=9
+var.mmove = 0.01
+
+
+Mouse.LeftButton = (wiimote.B && !wiimote.A)
+Mouse.RightButton = (wiimote.A && !wiimote.B)
+Mouse.MiddleButton = (wiimote.A && wiimote.B)
+
+key.WebBack = wiimote.Minus
+key.WebForward = wiimote.Plus
+
+if(wiimote.Two){
+  var.mmove = var.mmove + 0.005
+  wait 200 ms
+}else if(wiimote.One && var.mmove > 0.005){
+  var.mmove = var.mmove - 0.005
+  wait 200 ms
+}
+
+if(wiimote.Up){ //Up
+  mouse.y = mouse.y - var.mmove
+}
+if(wiimote.Down){  //Down
+  mouse.y = mouse.y + var.mmove
+}
+if(wiimote.Left){  //Left
+  mouse.x = mouse.x - var.mmove
+}
+if(wiimote.Right){  //Right
+  mouse.x = mouse.x + var.mmove
+}
+wait 10 ms

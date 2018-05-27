@@ -1,0 +1,63 @@
+
+// my wii gaming
+
+// for counter strike
+//IMPORTANT >> Press ~ (tilde) to go into the console when you're in game. 
+//Type in "sensitivity 0.1" This will allow you to actually aim. 
+
+
+
+var.rumble = true //"true" means that the Wiimote will rumble when 
+                  // you fire for realism. "false" turns it off. 
+
+
+
+// mode select
+if(wiimote.Home){
+    var.mode++
+    if(var.mode > 3){
+        var.mode = 1
+    }
+    wiimote.leds = var.mode
+    wait 200 ms
+}
+
+
+if ( doubleclicked(Home) ){
+//ExitPie
+wait 200 ms
+ExitProgram
+}
+
+
+
+
+if (var.mode == 1){
+    //WSAD is the D pad where up = W, down = S, left = A, and right = D
+    A = wiimote.Up
+    D = wiimote.Down
+    S = wiimote.Left
+    W = wiimote.Right
+    
+    J         = wiimote.one
+    K         = wiimote.two
+    Enter     = wiimote.A
+    Esc       = wiimote.B
+    Up        = wiimote.plus
+    Down      = wiimote.minus
+}else if(var.mode == 2){
+    // for counter strike
+    //WSAD is the D pad where up = W, down = S, left = A, and right = D
+    Up         = wiimote.Up
+    Down     = wiimote.Down
+    Left     = wiimote.Left
+    Right     = wiimote.Right
+    
+    Esc    = wiimote.minus
+    
+   
+}
+
+
+
+

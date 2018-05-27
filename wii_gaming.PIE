@@ -1,0 +1,429 @@
+﻿
+// my wii gaming
+// glovePIE ver 0.43
+
+// for counter strike
+//IMPORTANT >> Press ~ (tilde) to go into the console when you're in game. 
+//Type in "sensitivity 0.1" This will allow you to actually aim. 
+
+
+
+//var.rumble = true //"true" means that the Wiimote will rumble when
+                  // you fire for realism. "false" turns it off.
+
+
+
+/*
+mode 1
+- wiimote arror = keyboard array
+- nunchuck arrow = keyboad arrow
+use wiimote Plus button to toggle nunchuk enable / acc en
+mode 2
+wiimote mouse
+
+mode 3
+wiimote IR mouse
+
+*/
+
+
+// initialization
+if(var.initialize == false){
+  wiimote.Leds = 15
+  var.mmove=0.01
+  var.initialize = true
+  var.mode=0
+  var.accen = false
+
+  if(wiimote.HasNunchuk){
+    var.nunchuk_en = true
+    wiimote.Led3 = true
+  }else{
+    var.nunchuk_en = false
+    wiimote.Led3 = false
+  }
+  var.keydelay = 10     // 0 / 10
+  var.keydelay2 = var.keydelay*2
+  var.keydelay3 = var.keydelay*3
+  var.keydelay5 = var.keydelay*5
+}
+
+// wait 20 ms
+
+; have some button stuck issue if put inside if loop
+//Mouse.LeftButton = (wiimote.A && !wiimote.B)
+//Mouse.RightButton = (wiimote.B && !wiimote.A)
+//Mouse.MiddleButton = (wiimote.A && wiimote.B)
+
+; Mouse.LeftButton = (wiimote.B && !wiimote.A)
+; Mouse.RightButton = (wiimote.A && !wiimote.B)
+
+Mouse.LeftButton = wiimote.A
+Mouse.RightButton = wiimote.B
+
+////////////////////////////////////////////////////////////
+
+
+// mode select
+if(wiimote.Home){
+    var.mode++
+    if(var.mode > 4){
+        var.mode = 1
+    }
+    if(var.mode<5){
+      wiimote.leds = var.mode
+    }
+    wait 200 ms
+}
+
+
+
+
+if ( doubleclicked(Home) ){
+//ExitPie
+wait 200 ms
+ExitProgram
+}
+
+//Mouse.LeftButton = wiimote.B
+//Mouse.RightButton = wiimote.A
+
+
+
+if (var.mode == 1){
+    //WSAD is the D pad where up = W, down = S, left = A, and right = D
+    //A = wiimote.Up
+    //D = wiimote.Down
+    //S = wiimote.Left
+    //W = wiimote.Right
+
+
+    key.Enter     = wiimote.A
+    key.Escape      = wiimote.minus
+
+    if(wiimote.Plus){
+      if((!var.accen) && (!var.nunchuk_en)){
+        if(wiimote.HasNunchuk){
+          var.accen = false
+          var.nunchuk_en = true
+          wiimote.Led3 = true
+          wiimote.Led4 = false
+        }else{
+           var.accen = true
+           wiimote.Led4 = true
+        }
+      }else if((!var.accen) && var.nunchuk_en){
+        var.accen = true
+        var.nunchuk_en = false
+        wiimote.Led3 = false
+        wiimote.Led4 = true
+      }else if(var.accen && (!var.nunchuk_en)){
+        var.accen = false
+          //var.nunchuk_en = true
+          //wiimote.Led3 = true
+        wiimote.Led4 = false
+      }
+      wait 200 ms
+    }
+
+    if(var.accen == true){
+      if(wiimote.Right){
+        key.Up = true
+      }else{
+        key.Up = false
+      }
+      if(wiimote.Left){
+        key.Down = true
+      }else{
+        key.Down = false
+      }
+      if(wiimote.Up){
+        key.Left = true
+        wait var.keydelay ms
+        key.Left = false
+        wait var.keydelay ms
+      }else{
+        key.Left = false
+      }
+      if(wiimote.Down){
+        key.Right = true
+        wait var.keydelay ms
+        key.Right = false
+        wait var.keydelay ms
+      }else{
+        key.Right = false
+      }
+
+      ////// accz - left / right
+      if(var.accz > 0){
+        if(var.accz > 14){
+          key.Right = true
+          wait var.keydelay ms
+          key.Right = false
+          wait var.keydelay ms
+        }else if(var.accz > 9){
+          key.Right = true
+          wait var.keydelay2 ms
+          key.Right = false
+          wait var.keydelay2 ms
+        }else if(var.accz > 5){
+          key.Right = true
+          wait var.keydelay3 ms
+          key.Right = false
+          wait var.keydelay3 ms
+        }else{
+          key.Right = false
+        }
+      }else{
+        if(var.accz < -14){
+          key.Left = true
+          wait var.keydelay ms
+          key.Left = false
+          wait var.keydelay ms
+        }else if(var.accz < -9){
+          key.Left = true
+          wait var.keydelay2 ms
+          key.Left = false
+          wait var.keydelay2 ms
+        }else if(var.accz < -5){
+          key.Left = true
+          wait var.keydelay3 ms
+          key.Left = false
+          wait var.keydelay3 ms
+        }else{
+          key.Left = false
+        }
+      }
+      ////// accx - up / down
+      if(var.accx > 0){
+        if(var.accx > 9){
+          key.Down = true
+          //wait 10 ms
+        }else{
+          key.Down = false
+        }
+      }else{
+        if(var.accx < -9){
+          key.Up = true
+          //wait 10 ms
+        }else{
+          key.Up = false
+        }
+      }
+    }
+
+    if(wiimote.HasNunchuk && var.nunchuk_en){
+      key.Up = wiimote.Nunchuk.Up
+      key.Down = wiimote.Nunchuk.Down
+      key.Left = wiimote.Nunchuk.Left
+      key.Right = wiimote.Nunchuk.Right
+      
+	  //key.Ctrl = wiimote.Nunchuk.CButton
+      //key.Shift = wiimote.Nunchuk.ZButton
+	  key.Z = wiimote.Nunchuk.CButton
+      key.X = wiimote.Nunchuk.ZButton
+
+      var.mmove2 = 0.01
+      if(wiimote.Up){ //Up
+          mouse.y = mouse.y - var.mmove2
+      }
+      if(wiimote.Down){  //Down
+          mouse.y = mouse.y + var.mmove2
+      }
+      if(wiimote.Left){  //Left
+          mouse.x = mouse.x - var.mmove2
+      }
+      if(wiimote.Right){  //Right
+          mouse.x = mouse.x + var.mmove2
+      }
+      //key.z = wiimote.Nunchuk.ZButton && wiimote.Nunchuk.CButton
+    }else{
+      if(!var.accen){
+        key.Left = wiimote.Up
+        key.Right = wiimote.Down
+        key.Down = wiimote.Left
+        key.Up = wiimote.Right
+      }
+      key.J         = wiimote.one
+      key.K         = wiimote.two
+
+    }
+
+}else if (var.mode == 2){
+      key.A = wiimote.Up
+      key.D = wiimote.Down
+      key.S = wiimote.Left
+      key.W = wiimote.Right
+
+      key.Enter         = wiimote.A
+      key.J         = wiimote.one
+      key.K         = wiimote.two
+
+/*
+}else if (var.mode == 2){
+      key.Up = wiimote.Up
+      key.Down = wiimote.Down
+      key.Left = wiimote.Left
+      key.Right = wiimote.Right
+
+      key.Ctrl         = wiimote.A
+      key.Shift        = wiimote.B
+*/
+
+}else if(var.mode == 3){
+      //var.mmove = 0.02
+
+      ; Mouse.LeftButton = (wiimote.B && !wiimote.A)
+      ; Mouse.RightButton = (wiimote.A && !wiimote.B)
+      ; Mouse.MiddleButton = (wiimote.A && wiimote.B)
+
+      key.WebBack = wiimote.Minus
+      key.WebForward = wiimote.Plus
+
+      key.Escape = wiimote.One && wiimote.Two
+
+      if(wiimote.Two){
+          var.mmove = var.mmove + 0.005
+          wait 200 ms
+      }else if(wiimote.One && var.mmove > 0.005){
+          var.mmove = var.mmove - 0.005
+          wait 200 ms
+      }
+
+      //if(wiimote.Up){ //Up
+      //    mouse.y = mouse.y - var.mmove
+      //}
+      //if(wiimote.Down){  //Down
+      //    mouse.y = mouse.y + var.mmove
+      //}
+      //if(wiimote.Left){  //Left
+      //    mouse.x = mouse.x - var.mmove
+      //}
+      //if(wiimote.Right){  //Right
+      //    mouse.x = mouse.x + var.mmove
+      //}
+
+
+      if(wiimote.Right){ //Up
+          mouse.y = mouse.y - var.mmove
+      }
+      if(wiimote.Left){  //Down
+          mouse.y = mouse.y + var.mmove
+      }
+      if(wiimote.Up){  //Left
+          mouse.x = mouse.x - var.mmove
+      }
+      if(wiimote.Down){  //Right
+          mouse.x = mouse.x + var.mmove
+      }
+
+    if(wiimote.HasNunchuk){
+      if(wiimote.Nunchuk.Up){ //Up
+          mouse.y = mouse.y - var.mmove
+      }
+      if(wiimote.Nunchuk.Down){  //Down
+          mouse.y = mouse.y + var.mmove
+      }
+      if(wiimote.Nunchuk.Left){  //Left
+          mouse.x = mouse.x - var.mmove
+      }
+      if(wiimote.Nunchuk.Right){  //Right
+          mouse.x = mouse.x + var.mmove
+      }
+      //key.Up = wiimote.Nunchuk.Up
+      //key.Down = wiimote.Nunchuk.Down
+      //key.Left = wiimote.Nunchuk.Left
+      //key.Right = wiimote.Nunchuk.Right
+      key.Shift = wiimote.Nunchuk.CButton
+      key.Space = wiimote.Nunchuk.ZButton
+    }
+      wait 10 ms
+}else if(var.mode == 4){
+   // Led 4 should be on when everything is working
+   if (wiimote.PointerVisible){
+      Wiimote.Led4 = true
+   }else{
+      wiimote.Led4 = false
+   }
+
+   // Ignore cursor movement caused by clicking a button
+   //var.ButtonFreezeTime = 250ms
+   //var.PointerBump = KeepDown(Pressed(wiimote.A),var.ButtonFreezeTime) or KeepDown(Pressed(wiimote.B),var.ButtonFreezeTime)
+
+   // Mouse movement
+   if wiimote.PointerVisible but not var.PointerBump then
+      mouse.x = wiimote.PointerX
+      mouse.y = wiimote.PointerY
+   end if
+
+    // Mouse Buttons
+   //mouse.LeftButton   = Wiimote.A and KeepDown(Wiimote.PointerVisible,0.5s)
+   //mouse.RightButton  = Wiimote.B and KeepDown(Wiimote.PointerVisible,0.5s)
+
+   ; Mouse.LeftButton = (wiimote.B && !wiimote.A)
+   ; Mouse.RightButton = (wiimote.A && !wiimote.B)
+   ; Mouse.MiddleButton = (wiimote.A && wiimote.B)
+
+    key.Up         = wiimote.Up
+    key.Down     = wiimote.Down
+    key.Left     = wiimote.Left
+    key.Right     = wiimote.Right
+
+    //key.K = wiimote.One && !wiimote.Two
+    //key.G = wiimote.Two && !wiimote.One
+
+    key.E = wiimote.One && !wiimote.Two
+    key.Q = wiimote.Two && !wiimote.One
+    key.R = wiimote.One && wiimote.Two
+
+    //key.Esc = wiimote.Minus
+    //key.Windows = wiimote.Plus
+
+    key.Esc = wiimote.Minus
+    key.Enter = wiimote.Plus
+
+    if(wiimote.HasNunchuk){
+      key.Up = wiimote.Nunchuk.Up
+      key.Down = wiimote.Nunchuk.Down
+      key.Left = wiimote.Nunchuk.Left
+      key.Right = wiimote.Nunchuk.Right
+      key.Shift = wiimote.Nunchuk.CButton && !wiimote.Nunchuk.ZButton
+      key.Space = wiimote.Nunchuk.ZButton && !wiimote.Nunchuk.CButton
+      key.R = wiimote.Nunchuk.ZButton && wiimote.Nunchuk.CButton
+    }
+
+   //wait 20 ms
+}
+
+
+//jump by flicking the wiimote up 
+/*
+if var.accz >= 20 then
+   Space = true 
+else 
+   Space = false 
+endif 
+*/
+
+// ALL WORK BELOW HERE WAS NOT DONE BY ME (deceased)------------------------ 
+
+//Mouse Control Script using IR 
+//by vkapadia with much assistance from inio 
+//vkapadia@vkapadia.com 
+// 
+//Calibration: 
+//To calibrate, run this program and put the Wiimote on a flat surface face-up. 
+//Then read the values in the debug line (next to the run button). 
+//Change these values until the debug line reads approx. all zeros. 
+var.xtrim = -7.5
+var.ytrim = -18.5
+var.ztrim = -7.5
+
+var.accx = wiimote.RawForceX + var.xtrim 
+var.accy = wiimote.RawForceY + var.ytrim 
+var.accz = wiimote.RawForceZ + var.ztrim 
+
+
+//debug = "x " + var.accx + " y " + var.accy + " z " + var.accz
+//wait 500 ms
+//debug = "m=" + var.mmove + ",   mode=" + var.mode
